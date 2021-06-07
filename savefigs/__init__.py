@@ -17,12 +17,17 @@ __version__ = "0.1.0"
 #     ...
 
 
+# cla as plt.close("all") alias?
+
+
 # the main function
 def savefigs(
     *, 
     save_dir=None,
     stem_prefix: str = None,
     savefig_kwargs: dict = None,
+    clobber: bool = True,
+    noclobber_method: str = "raise",
 ):
     """Save all open Matplotlib figures.
     
@@ -38,6 +43,10 @@ def savefigs(
     savefig_kwargs
         Keyword arguments to `matplotlib.figure.Figure.savefig`.
         Some won't be allowed (TBD...).
+    clobber
+        Whether to overwrite existing files.
+    noclobber_method : {'raise', 'add_num'}
+        What to do when `clobber=False`.
     """
     
     if save_dir is None:
@@ -54,11 +63,26 @@ def savefigs(
     if savefig_kwargs is None:
         savefig_kwargs = dict(transparent=True, bbox_inches="tight", pad_inches=0.05, dpi=200)
 
+    # Loop over open figures
     for num in plt.get_fignums():
         fig = plt.figure(num)
+        
         label = fig.get_label()
         stem_fig = f"fig{fig.number:02d}" if not label else label
-        p_stem = save_dir / f"{stem_prefix}{stem_fig}"
-        fig.savefig(p_stem.with_suffix(".png"), **savefig_kwargs)
+        stem = f"{stem_prefix}{stem_fig}"
+        p_stem = save_dir / stem
+
+        p = p_stem.with_suffix(".png")
+        if p.is_file() and not clobber:
+            if noclobber_method == "raise":
+                raise Exception(f"file path {p.as_posix()} already exists")
+            elif noclobber_method == "add_num":
+                n = 2
+                while p.is_file():
+                    p = (save_dir / f"{stem}_{n}").with_suffix(".png")
+            else:
+                raise ValueError("invalid `noclobber_method`")
+
+        fig.savefig(p, **savefig_kwargs)
         # if pdf:
         #     fig.savefig(p_stem.with_suffix(".pdf"), **savefig_kwargs)
