@@ -80,3 +80,19 @@ def test_noclobber(tmpdir):
     
     # Now close
     plt.close(fig)
+
+
+def test_fig_with_label(tmpdir):
+    save_dir = Path(tmpdir)
+
+    # Create, save, close
+    label = "The best figure"
+    fig = plt.figure(num=label)
+    assert fig.get_label() == label
+    savefigs(save_dir=save_dir, stem_prefix="")
+    plt.close(fig)
+
+    # Check name
+    figs = list(save_dir.glob("*"))
+    assert len(figs) == 1
+    assert figs[0].name == "The best figure.png"
