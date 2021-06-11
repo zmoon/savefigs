@@ -1,20 +1,19 @@
 """
 Save all open Matplotlib figures.
 """
-import math
 import inspect
+import math
 import os
 import warnings
 from pathlib import Path
-from typing import Optional, Iterable, Union
+from typing import Iterable, Optional, Union
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-
 
 __version__ = "0.1.0"
 
 
+# import matplotlib as mpl
 # def pickstem(fig: mpl.figure.Figure):
 #     """Pick figure name stem."""
 #     ...
@@ -22,7 +21,7 @@ __version__ = "0.1.0"
 
 # the main function
 def savefigs(
-    *, 
+    *,
     save_dir: Optional[Union[str, Path, os.PathLike]] = None,
     stem_prefix: Optional[str] = None,
     formats: Optional[Iterable[str]] = None,
@@ -31,7 +30,7 @@ def savefigs(
     noclobber_method: str = "raise",
 ):
     """Save all open Matplotlib figures.
-    
+
     Parameters
     ----------
     save_dir
@@ -53,7 +52,7 @@ def savefigs(
     noclobber_method : {'raise', 'add_num'}
         What to do when `clobber=False`.
     """
-    
+
     if save_dir is None:
         save_dir = Path.cwd()
     else:
@@ -69,7 +68,7 @@ def savefigs(
             stem_prefix = f"{Path(caller_fn).stem}_"
         else:
             stem_prefix = ""
-        
+
     if formats is None:
         formats = ["png"]
 
@@ -87,13 +86,13 @@ def savefigs(
     nd = int(math.log10(n_figs)) + 1 if n_figs else 0
     for num in fignums:
         fig = plt.figure(num)
-        
+
         label = fig.get_label()  # TODO: also try `fig.canvas.manager.get_window_title`?
         s_num = str(num).zfill(nd)
         stem_fig = f"fig{s_num}" if not label else label
         stem = f"{stem_prefix}{stem_fig}"
         p_stem = save_dir / stem
-        
+
         for format in formats:
 
             ext = f".{format}"

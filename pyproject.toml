@@ -19,6 +19,19 @@ mypy = "^0.902"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.black]
+line-length = 100
+
+[tool.flake8]  # pyproject-flake8
+max-line-length = 100
+ignore = [
+  "E203", # whitespace before ':' - doesn't work well with black
+  "E402", # module level import not at top of file
+  "E501", # line too long - let black worry about that
+  "W503", # line break before binary operator
+  "E226", # missing whitespace around arithmetic operator - not always more readable imho
+]
+
 [[tool.mypy.overrides]]
 module = ["matplotlib.*", "pytest"]
 ignore_missing_imports = true

@@ -96,7 +96,7 @@ def test_noclobber(tmpdir):
 
     with pytest.raises(ValueError, match="invalid `noclobber_method`"):
         savefigs(save_dir=save_dir, clobber=False, noclobber_method="asdf")
-    
+
     # Now close
     plt.close(fig)
 
@@ -142,7 +142,7 @@ def test_savefig_kwargs(tmp_path):
     for kw in ("format",):
         with pytest.warns(UserWarning, match="savefig kwarg .* dropped"):
             savefigs(save_dir=save_dir, savefig_kwargs={kw: True})
-    
+
     # Close
     plt.close(fig)
 
@@ -153,9 +153,11 @@ def test_fignum_zfill(tmp_path):
     N = 10
     for _ in range(N):
         plt.figure()
-    
+
     savefigs(save_dir=save_dir, savefig_kwargs=dict(dpi=10))
 
     # Check names
     figs = list(save_dir.glob("*"))
-    assert sorted(p.name for p in figs) == [f"test_savefigs_fig{n:02d}.png" for n in range(1, N+1)]
+    assert sorted(p.name for p in figs) == [
+        f"test_savefigs_fig{n:02d}.png" for n in range(1, N + 1)
+    ]
