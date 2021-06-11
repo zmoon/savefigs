@@ -1,5 +1,5 @@
 """
-Save all open Matplotlib figures.
+Save all open Matplotlib figures
 """
 import inspect
 import math
@@ -11,6 +11,8 @@ from typing import Iterable, Optional, Union
 import matplotlib.pyplot as plt
 
 __version__ = "0.1.0"
+
+__all__ = ("savefigs",)
 
 
 # import matplotlib as mpl
