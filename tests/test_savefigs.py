@@ -136,4 +136,7 @@ def test_savefig_kwargs(tmp_path):
     # Check dropped kws
     for kw in ("format",):
         with pytest.warns(UserWarning, match="savefig kwarg .* dropped"):
-            savefigs(savefig_kwargs={kw: True})
+            savefigs(save_dir=save_dir, savefig_kwargs={kw: True})
+    
+    # Close
+    plt.close(fig)
