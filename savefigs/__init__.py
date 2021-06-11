@@ -3,9 +3,10 @@ Save all open Matplotlib figures.
 """
 import math
 import inspect
+import os
 import warnings
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, Iterable, Union
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -26,10 +27,10 @@ __version__ = "0.1.0"
 # the main function
 def savefigs(
     *, 
-    save_dir=None,
-    stem_prefix: str = None,
-    formats: Optional[List[str]] = None,
-    savefig_kwargs: dict = None,
+    save_dir: Optional[Union[str, Path, os.PathLike]] = None,
+    stem_prefix: Optional[str] = None,
+    formats: Optional[Iterable[str]] = None,
+    savefig_kwargs: Optional[dict] = None,
     clobber: bool = True,
     noclobber_method: str = "raise",
 ):
@@ -37,8 +38,8 @@ def savefigs(
     
     Parameters
     ----------
-    save_dir : path-like
-        Directory in which to save the figures.
+    save_dir
+        Directory in which to save the figures (must exist).
         Default: current working directory.
     stem_prefix
         Prefix applied to all save figures.
@@ -59,6 +60,11 @@ def savefigs(
     
     if save_dir is None:
         save_dir = Path.cwd()
+    else:
+        save_dir = Path(save_dir)
+
+    if not save_dir.is_dir():
+        raise ValueError("`save_dir` must be a directory that exists")
 
     if stem_prefix is None:
         caller_frame_info = inspect.stack()[1]
@@ -81,7 +87,8 @@ def savefigs(
 
     # Loop over open figures
     fignums = plt.get_fignums()
-    nd = int(math.log10(len(fignums))) + 1
+    n_figs = len(fignums)
+    nd = int(math.log10(n_figs)) + 1 if n_figs else 0
     for num in fignums:
         fig = plt.figure(num)
         
@@ -107,3 +114,5 @@ def savefigs(
                     raise ValueError("invalid `noclobber_method`")
 
             fig.savefig(p, **savefig_kwargs)
+
+    # Return paths?

@@ -38,6 +38,11 @@ def test_save_dir(tmpdir):
     assert figs[0].name == "test_savefigs_fig1.png"
 
 
+def test_bad_save_dir():
+    with pytest.raises(ValueError, match="`save_dir` must be a directory that exists"):
+        savefigs(save_dir="asdf1234")
+
+
 def test_stem_prefix(tmpdir):
     save_dir = Path(tmpdir)
 
