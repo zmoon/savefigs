@@ -28,7 +28,7 @@ def savefigs(
     savefig_kwargs: Optional[dict] = None,
     clobber: bool = True,
     noclobber_method: str = "raise",
-):
+) -> None:
     """Save all open Matplotlib figures.
 
     Parameters
