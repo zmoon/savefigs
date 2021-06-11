@@ -2,6 +2,7 @@
 Save all open Matplotlib figures.
 """
 import inspect
+import warnings
 from pathlib import Path
 from typing import Optional, List
 

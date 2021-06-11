@@ -125,3 +125,15 @@ def test_formats(tmp_path):
     figs = list(save_dir.glob("*"))
     assert len(figs) == len(formats)
     assert {p.suffix[1:] for p in figs} == set(formats)
+
+
+def test_savefig_kwargs(tmp_path):
+    save_dir = tmp_path
+
+    # Create
+    fig = plt.figure()
+
+    # Check dropped kws
+    for kw in ("format",):
+        with pytest.warns(UserWarning, match="savefig kwarg .* dropped"):
+            savefigs(savefig_kwargs={kw: True})
