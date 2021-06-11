@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -8,6 +9,19 @@ from savefigs import __version__, savefigs
 
 def test_version():
     assert __version__ == "0.1.0"
+
+
+def test_defaults():
+    fig = plt.figure()
+    savefigs()
+    plt.close(fig)
+
+    figs = list(Path().cwd().glob("*.png"))
+    assert len(figs) == 1
+    assert figs[0].name == "test_savefigs_fig01.png"
+
+    for p_fig in figs:
+        os.remove(p_fig)
 
 
 def test_save_dir(tmpdir):
@@ -96,3 +110,18 @@ def test_fig_with_label(tmpdir):
     figs = list(save_dir.glob("*"))
     assert len(figs) == 1
     assert figs[0].name == "The best figure.png"
+
+
+def test_formats(tmp_path):
+    save_dir = tmp_path
+
+    # Create, save, close
+    fig = plt.figure()
+    formats = ["png", "pdf", "svg"]
+    savefigs(save_dir=save_dir, formats=formats)
+    plt.close(fig)
+
+    # Check names
+    figs = list(save_dir.glob("*"))
+    assert len(figs) == len(formats)
+    assert {p.suffix[1:] for p in figs} == set(formats)
