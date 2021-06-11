@@ -15,13 +15,9 @@ import matplotlib.pyplot as plt
 __version__ = "0.1.0"
 
 
-
 # def pickstem(fig: mpl.figure.Figure):
 #     """Pick figure name stem."""
 #     ...
-
-
-# cla as plt.close("all") alias?
 
 
 # the main function
@@ -92,7 +88,7 @@ def savefigs(
     for num in fignums:
         fig = plt.figure(num)
         
-        label = fig.get_label()
+        label = fig.get_label()  # TODO: also try `fig.canvas.manager.get_window_title`?
         s_num = str(num).zfill(nd)
         stem_fig = f"fig{s_num}" if not label else label
         stem = f"{stem_prefix}{stem_fig}"
@@ -115,4 +111,4 @@ def savefigs(
 
             fig.savefig(p, **savefig_kwargs)
 
-    # Return paths?
+    # TODO: Return paths?
