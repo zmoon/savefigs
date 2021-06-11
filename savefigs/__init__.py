@@ -1,6 +1,7 @@
 """
 Save all open Matplotlib figures.
 """
+import math
 import inspect
 import warnings
 from pathlib import Path
@@ -79,11 +80,14 @@ def savefigs(
             warnings.warn(f"savefig kwarg `{kw}` dropped")
 
     # Loop over open figures
-    for num in plt.get_fignums():
+    fignums = plt.get_fignums()
+    nd = int(math.log10(len(fignums))) + 1
+    for num in fignums:
         fig = plt.figure(num)
         
         label = fig.get_label()
-        stem_fig = f"fig{fig.number:02d}" if not label else label
+        s_num = str(num).zfill(nd)
+        stem_fig = f"fig{s_num}" if not label else label
         stem = f"{stem_prefix}{stem_fig}"
         p_stem = save_dir / stem
         

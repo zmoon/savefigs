@@ -18,7 +18,7 @@ def test_defaults():
 
     figs = list(Path().cwd().glob("*.png"))
     assert len(figs) == 1
-    assert figs[0].name == "test_savefigs_fig01.png"
+    assert figs[0].name == "test_savefigs_fig1.png"
 
     for p_fig in figs:
         os.remove(p_fig)
@@ -35,7 +35,7 @@ def test_save_dir(tmpdir):
     # Check name
     figs = list(save_dir.glob("*"))
     assert len(figs) == 1
-    assert figs[0].name == "test_savefigs_fig01.png"
+    assert figs[0].name == "test_savefigs_fig1.png"
 
 
 def test_stem_prefix(tmpdir):
@@ -49,7 +49,7 @@ def test_stem_prefix(tmpdir):
     # Check name
     figs = list(save_dir.glob("*"))
     assert len(figs) == 1
-    assert figs[0].name == "hihifig01.png"
+    assert figs[0].name == "hihifig1.png"
 
 
 def test_clobber(tmpdir):
@@ -140,3 +140,17 @@ def test_savefig_kwargs(tmp_path):
     
     # Close
     plt.close(fig)
+
+
+def test_fignum_zfill(tmp_path):
+    save_dir = tmp_path
+
+    N = 10
+    for _ in range(N):
+        plt.figure()
+    
+    savefigs(save_dir=save_dir, savefig_kwargs=dict(dpi=10))
+
+    # Check names
+    figs = list(save_dir.glob("*"))
+    assert sorted(p.name for p in figs) == [f"test_savefigs_fig{n:02d}.png" for n in range(1, N+1)]
