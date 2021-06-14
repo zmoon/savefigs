@@ -2,7 +2,7 @@
 
 ## [unreleased]
 
-## [0.1.1] (2016-06-14)
+## [0.1.1] (2021-06-14)
 
 * Start changelog
 * Fix pre-commit hook settings
