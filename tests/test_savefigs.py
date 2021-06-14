@@ -11,7 +11,12 @@ mpl.use("Agg")
 
 
 def test_version():
-    assert __version__ == "0.1.0"
+    # pyproject.toml as the source of truth
+    # (controlled by `poetry version ...`)
+    with open("pyproject.toml", "r") as f:
+        pyproject_version = f.readlines()[2].partition("=")[2].strip()[1:-1]
+
+    assert __version__ == pyproject_version
 
 
 def test_defaults():

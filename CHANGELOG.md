@@ -2,6 +2,10 @@
 
 ## [unreleased]
 
+## [0.1.2] (2021-06-14)
+
+* Fix `__version__` (+ now testing to make sure it matches the one in `pyproject.toml`)
+
 ## [0.1.1] (2021-06-14)
 
 * Start changelog
@@ -16,6 +20,7 @@ Initial version
 
 
 
-[unreleased]: https://github.com/zmoon/savefigs/compare/v0.1.1...HEAD
+[unreleased]: https://github.com/zmoon/savefigs/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/zmoon/savefigs/releases/tag/v0.1.2
 [0.1.1]: https://github.com/zmoon/savefigs/releases/tag/v0.1.1
 [0.1.0]: https://github.com/zmoon/savefigs/releases/tag/v0.1.0

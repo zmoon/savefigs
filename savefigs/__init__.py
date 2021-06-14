@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 
 import matplotlib.pyplot as plt
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 __all__ = ("savefigs",)
 
