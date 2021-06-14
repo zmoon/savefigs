@@ -6,7 +6,7 @@ import math
 import os
 import warnings
 from pathlib import Path
-from typing import Iterable, Optional, Union
+from typing import Any, Dict, Iterable, Optional, Union
 
 import matplotlib.pyplot as plt
 
@@ -27,7 +27,7 @@ def savefigs(
     save_dir: Optional[Union[str, Path, os.PathLike]] = None,
     stem_prefix: Optional[str] = None,
     formats: Optional[Iterable[str]] = None,
-    savefig_kwargs: Optional[dict] = None,
+    savefig_kwargs: Optional[Dict[str, Any]] = None,
     clobber: bool = True,
     noclobber_method: str = "raise",
 ) -> None:

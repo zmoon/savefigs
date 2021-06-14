@@ -4,6 +4,7 @@
 
 * Fix pre-commit hook settings
 * Improve docs (readme)
+* Improve `savefigs()` argument type annotations
 
 ## [0.1.0] (2021-06-11)
 
