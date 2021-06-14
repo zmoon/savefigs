@@ -1,10 +1,13 @@
 import os
 from pathlib import Path
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
 from savefigs import __version__, savefigs
+
+mpl.use("Agg")
 
 
 def test_version():

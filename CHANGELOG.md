@@ -6,6 +6,7 @@
 * Fix pre-commit hook settings
 * Improve docs (readme)
 * Improve `savefigs()` argument type annotations
+* Use Agg backend in tests (faster)
 
 ## [0.1.0] (2021-06-11)
 
