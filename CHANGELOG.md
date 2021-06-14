@@ -2,6 +2,9 @@
 
 ## [unreleased]
 
+* Fix pre-commit hook settings
+* Improve docs (readme)
+
 ## [0.1.0] (2021-06-11)
 
 Initial version
