@@ -2,6 +2,7 @@
 
 ## [unreleased]
 
+* Start changelog
 * Fix pre-commit hook settings
 * Improve docs (readme)
 * Improve `savefigs()` argument type annotations
