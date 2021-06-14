@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "savefigs"
-version = "0.1.0"
+version = "0.1.1"
 description = "Save all open Matplotlib figures"
 authors = ["zmoon <zmoon92@gmail.com>"]
 readme = "README.md"
