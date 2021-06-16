@@ -44,10 +44,10 @@ savefigs(formats=["png", "pdf"])
 
 Avoid overwriting files:
 ```python
-savefigs(clobber=False, clobber_method="add_num")
+savefigs(clobber=False, noclobber_method="add_num")
 # ./some_script_fig3.png (assuming ./some_script_fig{1,2}.png already exist)
 ```
-👆 By default (without changing `clobber_method`), setting `clobber=False` will instead error.
+👆 By default (without changing `noclobber_method`), setting `clobber=False` will instead error.
 
 ## Background
 
