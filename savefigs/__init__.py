@@ -23,7 +23,7 @@ _p_tmp = Path(tempfile.gettempdir())
 #     ...
 
 
-def _get_ipython_last_ran() -> Optional[Path]:
+def _get_ipython_last_ran_file() -> Optional[Path]:
     import IPython
 
     hist = IPython.core.history.HistoryAccessor(profile="default")
@@ -32,6 +32,19 @@ def _get_ipython_last_ran() -> Optional[Path]:
         cmd = t[2]
         if cmd.startswith("runfile("):
             return Path(cmd.split(", wdir=")[0][9:-1])
+
+
+def _caller_is_ipykernel_interactive(fn: str) -> bool:
+    p = Path(fn)
+    # e.g., `$TEMP/ipykernel_255368/2963069196.py`
+    return not fn.startswith("<") and (
+        p.parents[0].name.startswith("ipykernel_") and p.parents[1] == _p_tmp
+    )
+
+
+def _caller_is_ipython(fn: str) -> bool:
+    # e.g., '<ipython-input-5-9043666a436b>'
+    return fn.startswith("<ipython")
 
 
 # the main function
@@ -79,16 +92,19 @@ def savefigs(
     if stem_prefix is None:
         stem_prefix = ""
 
+        # Attempt to detect caller file
         caller_frame_info = inspect.stack()[1]
-        caller_fn = caller_frame_info.filename
-        if not caller_fn.startswith("<"):  # '<stdin>', '<ipython ...'>, '<string>'
-            p_caller_fn = Path(caller_fn)
-            if not (
-                # IPython interactive in Spyder
-                p_caller_fn.parents[1] == _p_tmp
-                and p_caller_fn.parents[0].name.startswith("ipykernel_")
-            ):
-                stem_prefix = f"{p_caller_fn.stem}_"
+        caller = caller_frame_info.filename
+        if _caller_is_ipykernel_interactive(caller) or _caller_is_ipython(caller):
+            p_caller = _get_ipython_last_ran_file()
+        elif caller in ["<stdin>", "<string>"]:  # Python REPL or `python -c`
+            p_caller = None
+        else:
+            p_caller = Path(caller)
+
+        # Use caller filename stem in stem_prefix if it has been found
+        if p_caller is not None:
+            stem_prefix = f"{p_caller.stem}_"
 
     if formats is None:
         formats = ["png"]
