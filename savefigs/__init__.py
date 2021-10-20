@@ -23,6 +23,17 @@ _p_tmp = Path(tempfile.gettempdir())
 #     ...
 
 
+def _get_ipython_last_ran() -> Optional[Path]:
+    import IPython
+
+    hist = IPython.core.history.HistoryAccessor(profile="default")
+
+    for t in reversed(list(hist.get_tail(200))):
+        cmd = t[2]
+        if cmd.startswith("runfile("):
+            return Path(cmd.split(", wdir=")[0][9:-1])
+
+
 # the main function
 def savefigs(
     *,
