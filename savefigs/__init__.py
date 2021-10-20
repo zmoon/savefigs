@@ -33,6 +33,8 @@ def _get_ipython_last_ran_file() -> Optional[Path]:
         if cmd.startswith("runfile("):
             return Path(cmd.split(", wdir=")[0][9:-1])
 
+    return None
+
 
 def _caller_is_ipykernel_interactive(fn: str) -> bool:
     p = Path(fn)
