@@ -2,8 +2,10 @@
 Save all open Matplotlib figures
 """
 import inspect
+import logging
 import math
 import os
+import sys
 import tempfile
 import warnings
 from pathlib import Path
@@ -16,6 +18,10 @@ __version__ = "0.1.2"
 __all__ = ("savefigs",)
 
 _p_tmp = Path(tempfile.gettempdir())
+
+logging.basicConfig(stream=sys.stdout)
+logger = logging.getLogger(__name__)
+
 
 # import matplotlib as mpl
 # def pickstem(fig: mpl.figure.Figure):
@@ -58,6 +64,7 @@ def savefigs(
     savefig_kwargs: Optional[Dict[str, Any]] = None,
     clobber: bool = True,
     noclobber_method: str = "raise",
+    debug: bool = False,
 ) -> None:
     """Save all open Matplotlib figures.
 
@@ -81,7 +88,13 @@ def savefigs(
         Whether to overwrite existing files.
     noclobber_method : {'raise', 'add_num'}
         What to do when `clobber=False`.
+    debug
+        Whether to print info/debug messages (to stdout).
     """
+    if debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.WARNING)
 
     if save_dir is None:
         save_dir = Path.cwd()
@@ -97,16 +110,23 @@ def savefigs(
         # Attempt to detect caller file
         caller_frame_info = inspect.stack()[1]
         caller = caller_frame_info.filename
+        logger.info(f"caller: {caller!r}")
         if _caller_is_ipykernel_interactive(caller) or _caller_is_ipython(caller):
+            logger.info("caller detected as ipy interactive (ipython or ipykernel)")
             p_caller = _get_ipython_last_ran_file()
         elif caller in ["<stdin>", "<string>"]:  # Python REPL or `python -c`
+            logger.info("caller is stdin (Python REPL) or string input (`-c`)")
             p_caller = None
         else:
+            logger.info("caller detected as not ipy interactive, stdin, nor string")
             p_caller = Path(caller)
 
         # Use caller filename stem in stem_prefix if it has been found
         if p_caller is not None:
+            logger.info(f"caller file: {p_caller.as_posix()!r}")
             stem_prefix = f"{p_caller.stem}_"
+        else:
+            logger.info("caller file: none (or not detected)")
 
     if formats is None:
         formats = ["png"]
