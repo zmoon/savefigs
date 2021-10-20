@@ -4,6 +4,7 @@ Save all open Matplotlib figures
 import inspect
 import math
 import os
+import tempfile
 import warnings
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Union
@@ -14,6 +15,7 @@ __version__ = "0.1.2"
 
 __all__ = ("savefigs",)
 
+_p_tmp = Path(tempfile.gettempdir())
 
 # import matplotlib as mpl
 # def pickstem(fig: mpl.figure.Figure):
@@ -64,12 +66,18 @@ def savefigs(
         raise ValueError("`save_dir` must be a directory that exists")
 
     if stem_prefix is None:
+        stem_prefix = ""
+
         caller_frame_info = inspect.stack()[1]
         caller_fn = caller_frame_info.filename
         if not caller_fn.startswith("<"):  # '<stdin>', '<ipython ...'>, '<string>'
-            stem_prefix = f"{Path(caller_fn).stem}_"
-        else:
-            stem_prefix = ""
+            p_caller_fn = Path(caller_fn)
+            if not (
+                # IPython interactive in Spyder
+                p_caller_fn.parents[1] == _p_tmp
+                and p_caller_fn.parents[0].name.startswith("ipykernel_")
+            ):
+                stem_prefix = f"{p_caller_fn.stem}_"
 
     if formats is None:
         formats = ["png"]
