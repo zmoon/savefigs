@@ -30,16 +30,47 @@ logger = logging.getLogger(__name__)
 
 
 def _get_ipython_last_ran_file() -> Optional[Path]:
-    import IPython
+    # import IPython
+    # ha = IPython.core.history.HistoryAccessor()
+    from IPython import get_ipython
 
-    hist = IPython.core.history.HistoryAccessor(profile="default")
+    # Get current ipython session
+    ip = get_ipython()
+    hm = ip.history_manager
+    session_info = hm.get_session_info()
+    # ^ tuple: ID, start datetime, end datetime, ...
+    logger.debug(f"ipython session info: {session_info!r}")
 
-    for t in reversed(list(hist.get_tail(200))):
+    # Grab all commands of the session, including last
+    hist = list(hm.get_range())
+
+    logger.debug(f"last ipython command: {hist[-1]!r}")
+    # ^ Should have `savefigs` in it somewhere
+    #   Also end datetime in the session info should be `None`
+
+    if "savefigs(" not in hist[-1][2]:
+        logger.debug(
+            "`savefigs` appears not to be used in the last command, "
+            "skipping history search for last file."
+        )
+        return None
+
+    # Search backwards in history for the last `runfile` command
+    # TODO: also look for `run` or `%run`?
+    # TODO: check if the run command actually ran successfully?
+    p = None
+    for t in reversed(hist):
+        # tuple: session ID, command #, command (string)
         cmd = t[2]
         if cmd.startswith("runfile("):
-            return Path(cmd.split(", wdir=")[0][9:-1])
+            p = Path(cmd.split(", wdir=")[0][9:-1])
 
-    return None
+    if p is None:
+        logger.info("file not identified in ipython history")
+    else:
+        logger.info(f"file identified in ipython history: {p.as_posix()!r}")
+
+    return p
 
 
 def _caller_is_ipykernel_interactive(fn: str) -> bool:
