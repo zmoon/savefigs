@@ -17,7 +17,8 @@ __version__ = "0.1.2"
 
 __all__ = ("savefigs",)
 
-_p_tmp = Path(tempfile.gettempdir())
+_P_TMP = Path(tempfile.gettempdir())
+"""`Path` for the operating system root temp dir (according to `tempfile.gettempdir()`)."""
 
 logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger(__name__)
@@ -30,12 +31,10 @@ logger = logging.getLogger(__name__)
 
 
 def _get_ipython_last_ran_file() -> Optional[Path]:
-    # import IPython
-    # ha = IPython.core.history.HistoryAccessor()
     from IPython import get_ipython
 
     # Get current ipython session
-    ip = get_ipython()
+    ip = get_ipython()  # will be `None` if no current session
     hm = ip.history_manager
     session_info = hm.get_session_info()
     # ^ tuple: ID, start datetime, end datetime, ...
@@ -75,9 +74,9 @@ def _get_ipython_last_ran_file() -> Optional[Path]:
 
 def _caller_is_ipykernel_interactive(fn: str) -> bool:
     p = Path(fn)
-    # e.g., `$TEMP/ipykernel_255368/2963069196.py`
+    # e.g., `$TMP/ipykernel_255368/2963069196.py`
     return not fn.startswith("<") and (
-        p.parents[0].name.startswith("ipykernel_") and p.parents[1] == _p_tmp
+        p.parents[0].name.startswith("ipykernel_") and p.parents[1] == _P_TMP
     )
 
 
