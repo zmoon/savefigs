@@ -73,6 +73,10 @@ def _get_ipython_last_ran_file() -> Optional[Path]:
 
 
 def _caller_is_ipykernel_interactive(fn: str) -> bool:
+    from ipykernel import get_connection_file
+
+    logger.info(f"ipykernel connection file: {get_connection_file()}")
+
     p = Path(fn)
     # e.g., `$TMP/ipykernel_255368/2963069196.py`
     return not fn.startswith("<") and (
