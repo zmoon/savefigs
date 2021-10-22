@@ -13,7 +13,7 @@ matplotlib = "^3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
-mypy = "^0.902"
+mypy = "^0.910"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -33,5 +33,5 @@ ignore = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["matplotlib.*", "pytest"]
+module = ["matplotlib.*", "pytest", "IPython"]
 ignore_missing_imports = true
