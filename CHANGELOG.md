@@ -2,6 +2,9 @@
 
 ## [unreleased]
 
+* Fix caller file name stem detection for ipykernel and detect file name
+  in more situations ([#9](https://github.com/zmoon/savefigs/pull/9))
+
 ## [0.1.2] (2021-06-14)
 
 * Fix `__version__` (+ now testing to make sure it matches the one in `pyproject.toml`)
