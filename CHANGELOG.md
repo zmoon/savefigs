@@ -4,6 +4,8 @@
 
 * Fix caller file name stem detection for ipykernel and detect file name
   in more situations ([#9](https://github.com/zmoon/savefigs/pull/9))
+* `Figure.savefig` kwargs passed in via the `savefig_kwargs` kwarg
+  don't replace the whole dict of defaults, just individual values
 
 ## [0.1.2] (2021-06-14)
 

@@ -15,13 +15,20 @@ import matplotlib.pyplot as plt
 
 __version__ = "0.1.2"
 
-__all__ = ("savefigs",)
+__all__ = ("savefigs", "default_savefig_kwargs")
 
 _P_TMP = Path(tempfile.gettempdir())
 """`Path` for the operating system root temp dir (according to `tempfile.gettempdir()`)."""
 
 logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger(__name__)
+
+default_savefig_kwargs = {
+    "dpi": 200,
+    "transparent": True,
+    "bbox_inches": "tight",
+    "pad_inches": 0.05,
+}
 
 
 # import matplotlib as mpl
@@ -85,7 +92,6 @@ def _caller_is_ipython(fn: str) -> bool:
     return fn.startswith("<ipython")
 
 
-# the main function
 def savefigs(
     *,
     save_dir: Optional[Union[str, Path, os.PathLike]] = None,
@@ -108,12 +114,25 @@ def savefigs(
         Default: file stem of the calling file
         (if called from a script, else no stem prefix).
     formats
-        File formats to be used in `Figure.savefig`'s `format` argument.
+        File formats to be used in
+        [`Figure.savefig`](https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.savefig)'s
+        `format` argument.
         For example, `'png'`, `'pdf'`, `'svg'`.
-        Default: PNG only `['png']`.
+        Default: PNG only (`['png']`).
     savefig_kwargs
-        Keyword arguments to `matplotlib.figure.Figure.savefig`.
-        Some won't be allowed (TBD...).
+        Keyword arguments to
+        [`Figure.savefig`](https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.savefig),
+        in order to override our defaults and those of Matplotlib.
+        `format` is ignored if passed.
+        Our defaults (`savefigs.default_savefig_kwargs`) are:
+
+            | key           | value     |
+            | ------------- | --------- |
+            | `dpi`         | `200`     |
+            | `transparent` | `True`    |
+            | `bbox_inches` | `'tight'` |
+            | `pad_inches`  | `0.05`    |
+
     clobber
         Whether to overwrite existing files.
     noclobber_method : {'raise', 'add_num'}
@@ -161,8 +180,11 @@ def savefigs(
     if formats is None:
         formats = ["png"]
 
-    if savefig_kwargs is None:
-        savefig_kwargs = dict(transparent=True, bbox_inches="tight", pad_inches=0.05, dpi=200)
+    # Set savefig kwargs, using the defaults and any inputs
+    savefig_kwargs_in = savefig_kwargs if savefig_kwargs is not None else {}
+    savefig_kwargs = default_savefig_kwargs.copy()
+    savefig_kwargs.update(savefig_kwargs_in)
+    logger.info(f"savefig kwargs: {savefig_kwargs}")
 
     for kw in ("format",):
         if kw in savefig_kwargs:
