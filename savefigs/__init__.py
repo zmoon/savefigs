@@ -9,7 +9,7 @@ import sys
 import tempfile
 import warnings
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 
@@ -222,3 +222,50 @@ def savefigs(
             fig.savefig(p, **savefig_kwargs)
 
     # TODO: Return paths?
+
+
+def _get_username() -> str:
+    import getpass
+
+    return getpass.getuser()
+
+
+def savefigs_multipagepdf(
+    *,
+    author: Optional[str] = None,
+    usetex: bool = True,
+    note_xy: Tuple[float, float] = (-100, -100),
+):
+    # https://matplotlib.org/stable/gallery/misc/multipage_pdf.html
+    from matplotlib.backends.backend_pdf import PdfPages
+
+    # TODO: figs, captions args
+    # TODO: reduce duplication wrt. main fn
+
+    save_dir = Path.cwd()
+
+    if author is None:
+        author = _get_username()
+
+    fignums = plt.get_fignums()
+    n_figs = len(fignums)
+    nd = int(math.log10(n_figs)) + 1 if n_figs else 0
+
+    with PdfPages(save_dir / "multipage.pdf") as pdf, plt.rc_context({"text.usetex": usetex}):
+        for num in fignums:
+            fig = plt.figure(num)
+            s_num = str(num).zfill(nd)
+
+            note = f"Figure {s_num}."
+            caption = fig.get_label()
+            if caption:
+                note += f" {caption}"
+            print(note)
+            pdf.attach_note(note, positionRect=[*note_xy, 0, 0])
+
+            pdf.savefig(fig)
+
+        d = pdf.infodict()
+        d["Author"] = author
+        # d["Title"]
+        # d["Subject"]
