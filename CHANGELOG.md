@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+* Add `py.typed` file
+
 ## [0.2.0] (2021-10-22)
 
 * Fix caller file name stem detection for ipykernel and detect file name
