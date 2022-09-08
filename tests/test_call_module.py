@@ -16,8 +16,9 @@ def test_defaults():
     plt.close(fig)
 
     figs = list(Path().cwd().glob("*.png"))
-    assert len(figs) == 1
-    assert figs[0].name == "test_savefigs_fig1.png"
-
-    for p_fig in figs:
-        os.remove(p_fig)
+    try:
+        assert len(figs) == 1
+        assert figs[0].name == "test_call_module_fig1.png"
+    finally:
+        for p_fig in figs:
+            os.remove(p_fig)
