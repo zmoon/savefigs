@@ -1,6 +1,7 @@
 """
 Save all open Matplotlib figures
 """
+import functools
 import inspect
 import logging
 import math
@@ -222,3 +223,19 @@ def savefigs(
             fig.savefig(p, **savefig_kwargs)
 
     # TODO: Return paths?
+
+
+# Set up as a callable module, so that the more-concise
+# `import savefigs; savefigs()`
+# can be used, instead of
+# `from savefigs import savefigs; savefigs()`
+# https://stackoverflow.com/a/48100440
+
+
+class _CallSavefigs(sys.modules[__name__].__class__):
+    @functools.wraps(savefigs)
+    def __call__(self, *args, **kwargs):  # module callable
+        savefigs(*args, **kwargs)
+
+
+sys.modules[__name__].__class__ = _CallSavefigs
