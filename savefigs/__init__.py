@@ -8,6 +8,7 @@ import math
 import os
 import sys
 import tempfile
+import types
 import warnings
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Union
@@ -236,7 +237,7 @@ def savefigs(
 # https://stackoverflow.com/a/48100440
 
 
-class _CallSavefigs(sys.modules[__name__].__class__):
+class _CallSavefigs(types.ModuleType):
     @functools.wraps(savefigs)
     def __call__(self, *args, **kwargs):  # module callable
         kwargs["stack_pos"] = kwargs.get("stack_pos", 2)  # new default
