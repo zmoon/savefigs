@@ -3,6 +3,7 @@
 ## [unreleased]
 
 * Add `py.typed` file
+* Make the module callable, allowing the concise `import savefigs; savefigs()`
 
 ## [0.2.0] (2021-10-22)
 
