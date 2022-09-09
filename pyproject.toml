@@ -1,24 +1,33 @@
-[tool.poetry]
-name = "savefigs"
-version = "0.2.0"
-description = "Save all open Matplotlib figures"
-authors = ["zmoon <zmoon92@gmail.com>"]
-readme = "README.md"
-homepage = "https://github.com/zmoon/savefigs"
-repository = "https://github.com/zmoon/savefigs"
-
-[tool.poetry.dependencies]
-python = "^3.7"
-matplotlib = "^3.0"
-
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
-mypy = "^0.910"
-pdoc = "*"
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "savefigs"
+authors = [{name = "zmoon", email = "zmoon92@gmail.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version", "description"]
+requires-python = "~=3.7"
+dependencies = [
+    "matplotlib ~=3.0",
+]
+
+[project.urls]
+Home = "https://github.com/zmoon/savefigs"
+Source = "https://github.com/zmoon/savefigs"
+Documentation = "https://github.com/zmoon/savefigs"
+
+[project.optional-dependencies]
+test = [
+  "mypy",
+  "pytest",
+]
+dev = [
+  "ipython",
+  "pdoc",
+]
+
 
 [tool.black]
 line-length = 100

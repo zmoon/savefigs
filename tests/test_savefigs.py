@@ -5,18 +5,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
-from savefigs import __version__, savefigs
+from savefigs import savefigs
 
 mpl.use("Agg")
-
-
-def test_version():
-    # pyproject.toml as the source of truth
-    # (controlled by `poetry version ...`)
-    with open("pyproject.toml", "r") as f:
-        pyproject_version = f.readlines()[2].partition("=")[2].strip()[1:-1]
-
-    assert __version__ == pyproject_version
 
 
 def test_defaults():
