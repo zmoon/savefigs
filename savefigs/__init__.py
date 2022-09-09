@@ -114,7 +114,7 @@ def savefigs(
         Default: current working directory.
     stem_prefix
         Prefix applied to all save figures.
-        Default: file stem of the calling file
+        Default: file stem of the calling file with `_` appended
         (if called from a script, else no stem prefix).
     formats
         File formats to be used in
@@ -251,8 +251,12 @@ def save_script_figs(script: Union[str, Path, os.PathLike], **kwargs) -> None:
     """Run a script and save the figures it produces."""
     import importlib
 
-    importlib.import_module(script)
+    p = Path(script).resolve()
+    sys.path.insert(0, str(p.parent))
 
+    importlib.import_module(p.stem)
+
+    kwargs["stem_prefix"] = kwargs.get("stem_prefix", f"{p.stem}_")  # new default
     savefigs(**kwargs)
 
 
