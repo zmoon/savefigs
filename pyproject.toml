@@ -24,6 +24,7 @@ test = [
   "pytest",
 ]
 dev = [
+  "ipython",
   "pdoc",
 ]
 
