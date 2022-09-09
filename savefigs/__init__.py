@@ -245,3 +245,36 @@ class _CallSavefigs(types.ModuleType):
 
 
 sys.modules[__name__].__class__ = _CallSavefigs
+
+
+def save_script_figs(script: Union[str, Path, os.PathLike], **kwargs) -> None:
+    """Run a script and save the figures it produces."""
+    import importlib
+
+    importlib.import_module(script)
+
+    savefigs(**kwargs)
+
+
+def cli(argv: Optional[str] = None) -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Save Matplotlib figures produced by a script.")
+    parser.add_argument("SCRIPT", type=Path, help="script path")
+    parser.add_argument(
+        "-V",
+        "--version",
+        help="print version info",
+        action="version",
+        version=f"savefigs {__version__}",
+    )
+
+    args = parser.parse_args(argv)
+    p = args.SCRIPT
+
+    if p is None:
+        print("must provide script path")
+        parser.print_usage()
+        return 2
+
+    save_script_figs(p)
