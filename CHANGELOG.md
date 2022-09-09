@@ -2,8 +2,11 @@
 
 ## [unreleased]
 
+## [0.2.1] (2022-09-09)
+
 * Add `py.typed` file
 * Make the module callable, allowing the concise `import savefigs; savefigs()`
+* Migrate from Poetry to Flit
 
 ## [0.2.0] (2021-10-22)
 
@@ -30,7 +33,8 @@ Initial version
 
 
 
-[unreleased]: https://github.com/zmoon/savefigs/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/zmoon/savefigs/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/zmoon/savefigs/releases/tag/v0.2.1
 [0.2.0]: https://github.com/zmoon/savefigs/releases/tag/v0.2.0
 [0.1.2]: https://github.com/zmoon/savefigs/releases/tag/v0.1.2
 [0.1.1]: https://github.com/zmoon/savefigs/releases/tag/v0.1.1

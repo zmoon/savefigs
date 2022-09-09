@@ -15,7 +15,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 
 import matplotlib.pyplot as plt
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = ("savefigs", "default_savefig_kwargs")
 
