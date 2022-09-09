@@ -1,12 +1,14 @@
 """
 Save all open Matplotlib figures
 """
+import functools
 import inspect
 import logging
 import math
 import os
 import sys
 import tempfile
+import types
 import warnings
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Union
@@ -101,6 +103,7 @@ def savefigs(
     clobber: bool = True,
     noclobber_method: str = "raise",
     debug: bool = False,
+    stack_pos: int = 1,
 ) -> None:
     """Save all open Matplotlib figures.
 
@@ -139,6 +142,9 @@ def savefigs(
         What to do when `clobber=False`.
     debug
         Whether to print info/debug messages (to stdout).
+    stack_pos
+        Stack position to look at when detecting the caller
+        to determine what to use for the default `stem_prefix`.
     """
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -157,7 +163,7 @@ def savefigs(
         stem_prefix = ""
 
         # Attempt to detect caller file
-        caller_frame_info = inspect.stack()[1]
+        caller_frame_info = inspect.stack()[stack_pos]
         caller = caller_frame_info.filename
         logger.info(f"caller: {caller!r}")
         if _caller_is_ipykernel_interactive(caller) or _caller_is_ipython(caller):
@@ -222,3 +228,20 @@ def savefigs(
             fig.savefig(p, **savefig_kwargs)
 
     # TODO: Return paths?
+
+
+# Set up as a callable module, so that the more-concise
+# `import savefigs; savefigs()`
+# can be used, instead of
+# `from savefigs import savefigs; savefigs()`
+# https://stackoverflow.com/a/48100440
+
+
+class _CallSavefigs(types.ModuleType):
+    @functools.wraps(savefigs)
+    def __call__(self, *args, **kwargs):  # module callable
+        kwargs["stack_pos"] = kwargs.get("stack_pos", 2)  # new default
+        savefigs(*args, **kwargs)
+
+
+sys.modules[__name__].__class__ = _CallSavefigs
