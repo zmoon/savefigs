@@ -276,9 +276,14 @@ def cli(argv: Optional[str] = None) -> int:
     args = parser.parse_args(argv)
     p = args.SCRIPT
 
-    if p is None:
-        print("must provide script path")
-        parser.print_usage()
+    if not p.is_file():
+        print("error: script path must exist")
         return 2
 
-    save_script_figs(p)
+    try:
+        save_script_figs(p)
+    except Exception as e:
+        print(f"error: {e}")
+        return 1
+
+    return 0
