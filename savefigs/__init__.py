@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 __version__ = "0.2.1"
 
-__all__ = ("savefigs", "default_savefig_kwargs")
+__all__ = ("savefigs", "default_savefig_kwargs", "save_script_figs")
 
 _P_TMP = Path(tempfile.gettempdir())
 """`Path` for the operating system root temp dir (according to `tempfile.gettempdir()`)."""
@@ -282,14 +282,14 @@ def cli(argv: Optional[str] = None) -> int:
     )
 
     args = parser.parse_args(argv)
-    p = args.SCRIPT
+    script = args.SCRIPT
 
-    if not p.is_file():
+    if not script.is_file():
         print("error: script path must exist")
         return 2
 
     try:
-        save_script_figs(p)
+        save_script_figs(script)
     except Exception as e:
         print(f"error: {e}")
         return 1
