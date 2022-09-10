@@ -247,17 +247,43 @@ class _CallSavefigs(types.ModuleType):
 sys.modules[__name__].__class__ = _CallSavefigs
 
 
-def save_script_figs(script: Union[str, Path, os.PathLike], **kwargs) -> None:
-    """Run a script and save the figures it produces."""
-    import importlib
+def _task(script, **kwargs):
+    import runpy
 
     p = Path(script).resolve()
-    sys.path.insert(0, str(p.parent))
 
-    importlib.import_module(p.stem)
-
+    runpy.run_path(script)
     kwargs["stem_prefix"] = kwargs.get("stem_prefix", f"{p.stem}_")  # new default
     savefigs(**kwargs)
+
+
+def save_script_figs(script: Union[str, Path, os.PathLike], **kwargs) -> None:
+    """Run a script and save the figures it produces."""
+
+    p = Path(script).resolve()
+
+    # import importlib
+    # sys.path.insert(0, str(p.parent))
+    # importlib.import_module(p.stem)
+
+    def task():
+        import runpy
+
+        runpy.run_path(script)
+
+        kwargs["stem_prefix"] = kwargs.get("stem_prefix", f"{p.stem}_")  # new default
+        savefigs(**kwargs)
+
+    # from threading import Thread
+    # thread = Thread(target=task)
+    # thread.start()
+    # thread.join()
+
+    from multiprocessing import Process
+
+    p = Process(target=_task, args=(script,), kwargs=kwargs)
+    p.start()
+    p.join()
 
 
 def cli(argv: Optional[str] = None) -> int:
