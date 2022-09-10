@@ -113,7 +113,7 @@ def savefigs(
         Directory in which to save the figures (must exist).
         Default: current working directory.
     stem_prefix
-        Prefix applied to all save figures.
+        Prefix applied to all saved figure file names.
         Default: file stem of the calling file with `_` appended
         (if called from a script, else no stem prefix).
     formats
@@ -266,30 +266,76 @@ def save_script_figs(script: Union[str, Path, os.PathLike], **kwargs) -> None:
     p = Process(target=_save_script_figs_task, args=(script,), kwargs=kwargs)
     p.start()
     p.join()
+    p.kill()
+    # TODO: exceptions in the child aren't caught in the CLI try block
 
 
 def cli(argv: Optional[str] = None) -> int:
     import argparse
 
-    parser = argparse.ArgumentParser(description="Save Matplotlib figures produced by a script.")
-    parser.add_argument("SCRIPT", type=Path, help="script path to run")
+    parser = argparse.ArgumentParser(
+        description="Save Matplotlib figures produced by a script.", add_help=False
+    )
+    parser.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help="Show this help message and exit.",
+    )
+    parser.add_argument("SCRIPT", type=Path, help="Script path to run.")
     parser.add_argument(
         "-V",
         "--version",
-        help="print version info",
+        help="Print version info and exit.",
         action="version",
         version=f"savefigs {__version__}",
+    )
+    parser.add_argument(
+        "--save-dir",
+        help=(
+            "Directory in which to save the figures (must exist). "
+            "Default: current working directory."
+        ),
+        type=Path,
+        default=None,
+    )
+    parser.add_argument(
+        "--stem-prefix",
+        help=(
+            "Prefix applied to all saved figure file names. "
+            "Default: file stem of the script with `_` appended."
+        ),
+        type=str,
+        default=None,
+    )
+    parser.add_argument(
+        "--formats",
+        help=(
+            "Formats to be used in the Matplotlib `savefig()` call, "
+            "separated by `,` if more than one."
+        ),
+        type=str,
+        default="png",
     )
 
     args = parser.parse_args(argv)
     script = args.SCRIPT
+
+    kwargs = {
+        "save_dir": args.save_dir,
+        "stem_prefix": args.stem_prefix,
+        "formats": [fmt.strip(" '\"") for fmt in args.formats.split(",")],
+    }
+    if kwargs["stem_prefix"] is None:
+        del kwargs["stem_prefix"]
 
     if not script.is_file():
         print("error: script path must exist")
         return 2
 
     try:
-        save_script_figs(script)
+        save_script_figs(script, **kwargs)
     except Exception as e:
         print(f"error: {e}")
         return 1
