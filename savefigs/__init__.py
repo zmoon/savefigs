@@ -211,7 +211,6 @@ def savefigs(
         p_stem = save_dir / stem
 
         for format in formats:
-
             ext = f".{format}"
             p = p_stem.with_suffix(ext)
             if p.is_file() and not clobber:
