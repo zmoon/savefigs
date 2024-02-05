@@ -1,6 +1,7 @@
 """
 Save all open Matplotlib figures
 """
+
 import functools
 import inspect
 import logging
