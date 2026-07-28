@@ -2,6 +2,10 @@
 
 ## [unreleased]
 
+* Save the figures produced but not saved by an external script
+  using the new `save_script_figs()` function
+  or the new `savefigs` CLI.
+
 ## [0.2.1] (2022-09-09)
 
 * Add `py.typed` file
