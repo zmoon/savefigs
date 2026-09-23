@@ -28,6 +28,9 @@ dev = [
   "pdoc",
 ]
 
+[project.scripts]
+savefigs = "savefigs:cli"
+
 
 [tool.black]
 line-length = 100
